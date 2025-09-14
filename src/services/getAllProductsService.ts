@@ -22,7 +22,7 @@ export async function getAllProductsService({ limit, page }: Params) {
             formattedPrice: new Intl.NumberFormat('pt-BR', {
                 style: 'currency',
                 currency: 'BRL',
-            }).format(product.price),
+            }).format(product.price / 100),
             photoUrl: product.photoUrl,
             createdAt: product.createdAt,
             updatedAt: product.updatedAt,
