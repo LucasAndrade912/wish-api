@@ -9,14 +9,15 @@
         "prettier:fix": "prettier --write src",
         "lint": "eslint src --ext .ts",
         "lint:fix": "eslint src --ext .ts --fix",
-        "start": "node src/server.js",
-        "build": "tsc"
+        "start": "node --env-file=.env dist/src/server.js",
+        "build": "tsc && cd dist && prisma generate --schema ../prisma/schema.prisma"
     },
     "keywords": [],
     "author": "",
     "license": "ISC",
     "type": "commonjs",
     "dependencies": {
+        "@prisma/client": "^6.16.1",
         "fastify": "^5.6.0"
     },
     "devDependencies": {
@@ -31,6 +32,7 @@
         "globals": "^16.4.0",
         "jiti": "^2.5.1",
         "prettier": "^3.6.2",
+        "prisma": "^6.16.1",
         "tsx": "^4.20.5",
         "typescript": "^5.9.2",
         "typescript-eslint": "^8.43.0"
