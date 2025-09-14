@@ -4,6 +4,7 @@ import { FastifyInstance } from 'fastify';
 import { IQuerystring } from '../types/request';
 import { getAllProductsService } from '../services/getAllProductsService';
 import { createProductService } from '../services/createProductService';
+import { updateProductService } from '../services/updateProductService';
 
 export default async function (app: FastifyInstance) {
     const createProductSchema = z.object({
@@ -11,6 +12,13 @@ export default async function (app: FastifyInstance) {
         price: z.number().min(0),
         photoUrl: z.url(),
         link: z.url(),
+    });
+
+    const updateProductSchema = z.object({
+        title: z.string().min(3).max(255).optional(),
+        price: z.number().min(0).optional(),
+        photoUrl: z.url().optional(),
+        link: z.url().optional(),
     });
 
     app.get<{ Querystring: IQuerystring }>('/products', async (request, reply) => {
@@ -49,5 +57,40 @@ export default async function (app: FastifyInstance) {
         return reply
             .status(201)
             .send({ message: 'Product created successfully', data: createdProduct });
+    });
+
+    app.put('/products/:id', async (request, reply) => {
+        const { id } = request.params as { id: string };
+
+        const result = updateProductSchema.safeParse(request.body);
+
+        if (!result.success) {
+            return reply.status(400).send({
+                error: 'Invalid request body',
+                details: z.prettifyError(result.error),
+            });
+        }
+
+        try {
+            const updatedData = await updateProductService({
+                id,
+                ...result.data,
+            });
+
+            app.log.info(`PUT /products/${id} | Updated product`);
+
+            return reply.send({
+                message: 'Product updated successfully',
+                data: updatedData,
+            });
+        } catch (error) {
+            if (error instanceof Error) {
+                app.log.error(
+                    `PUT /products/${id} | Error updating product: ${error.message}`
+                );
+
+                return reply.status(400).send({ error: error.message, details: null });
+            }
+        }
     });
 }
