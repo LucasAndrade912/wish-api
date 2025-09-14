@@ -1,12 +1,15 @@
-import fastify from 'fastify';
+import { app } from './app';
 
-import { prismaClient } from './lib/prismaClient';
+const port = Number(process.env.PORT);
 
-const app = fastify({ logger: true });
+async function start() {
+    try {
+        await app.listen({ port });
+        app.log.info(`Server is running on http://localhost:${port}`);
+    } catch (err) {
+        app.log.error(err);
+        process.exit(1);
+    }
+}
 
-app.get('/', async (request, reply) => {
-    const products = await prismaClient.product.findMany();
-    return reply.send({ products });
-});
-
-app.listen({ port: Number(process.env.PORT) });
+start();
