@@ -1,9 +1,12 @@
 import fastify from 'fastify';
 
+import { prismaClient } from './lib/prismaClient';
+
 const app = fastify({ logger: true });
 
 app.get('/', async (request, reply) => {
-    return reply.send({ message: 'Hello, World!' });
+    const products = await prismaClient.product.findMany();
+    return reply.send({ products });
 });
 
-app.listen({ port: 3000 });
+app.listen({ port: Number(process.env.PORT) });
