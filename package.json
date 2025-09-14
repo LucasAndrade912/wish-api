@@ -1,0 +1,38 @@
+{
+    "name": "wish-api",
+    "version": "1.0.0",
+    "description": "",
+    "main": "index.js",
+    "scripts": {
+        "dev": "tsx watch src/server.ts",
+        "prettier": "prettier --check src",
+        "prettier:fix": "prettier --write src",
+        "lint": "eslint src --ext .ts",
+        "lint:fix": "eslint src --ext .ts --fix",
+        "start": "node src/server.js",
+        "build": "tsc"
+    },
+    "keywords": [],
+    "author": "",
+    "license": "ISC",
+    "type": "commonjs",
+    "dependencies": {
+        "fastify": "^5.6.0"
+    },
+    "devDependencies": {
+        "@eslint/js": "^9.35.0",
+        "@eslint/json": "^0.13.2",
+        "@eslint/markdown": "^7.2.0",
+        "@tsconfig/node22": "^22.0.2",
+        "@types/node": "^24.3.3",
+        "eslint": "^9.35.0",
+        "eslint-config-prettier": "^10.1.8",
+        "eslint-plugin-prettier": "^5.5.4",
+        "globals": "^16.4.0",
+        "jiti": "^2.5.1",
+        "prettier": "^3.6.2",
+        "tsx": "^4.20.5",
+        "typescript": "^5.9.2",
+        "typescript-eslint": "^8.43.0"
+    }
+}
