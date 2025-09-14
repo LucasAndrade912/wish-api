@@ -5,6 +5,7 @@ import { IQuerystring } from '../types/request';
 import { getAllProductsService } from '../services/getAllProductsService';
 import { createProductService } from '../services/createProductService';
 import { updateProductService } from '../services/updateProductService';
+import { deleteProductService } from '../services/deleteProductService';
 
 export default async function (app: FastifyInstance) {
     const createProductSchema = z.object({
@@ -87,6 +88,26 @@ export default async function (app: FastifyInstance) {
             if (error instanceof Error) {
                 app.log.error(
                     `PUT /products/${id} | Error updating product: ${error.message}`
+                );
+
+                return reply.status(400).send({ error: error.message, details: null });
+            }
+        }
+    });
+
+    app.delete('/products/:id', async (request, reply) => {
+        const { id } = request.params as { id: string };
+
+        app.log.info(`DELETE /products/${id} | Delete functionality not implemented`);
+
+        try {
+            await deleteProductService(id);
+
+            return reply.send({ message: 'Product deleted successfully', data: null });
+        } catch (error) {
+            if (error instanceof Error) {
+                app.log.error(
+                    `DELETE /products/${id} | Error deleting product: ${error.message}`
                 );
 
                 return reply.status(400).send({ error: error.message, details: null });
