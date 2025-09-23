@@ -10,9 +10,11 @@ export async function webScrappingService(url: string) {
         throw new DomainNotSupportedException();
     }
 
+    const urlWithoutParams = url.split('?')[0];
+
     const browser = await puppeteer.launch({ headless: true });
     const page = await browser.newPage();
-    await page.goto(url);
+    await page.goto(urlWithoutParams);
     const content = await page.content();
 
     const $ = cheerio.load(content);
