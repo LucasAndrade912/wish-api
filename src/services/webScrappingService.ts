@@ -1,7 +1,15 @@
 import puppeteer from 'puppeteer';
 import * as cheerio from 'cheerio';
 
+import { DomainNotSupportedException } from '../exceptions/domainNotSupportedException';
+
 export async function webScrappingService(url: string) {
+    const supportedDomains = ['https://pt.aliexpress.com/'];
+
+    if (!supportedDomains.some((domain) => url.startsWith(domain))) {
+        throw new DomainNotSupportedException();
+    }
+
     const browser = await puppeteer.launch({ headless: true });
     const page = await browser.newPage();
     await page.goto(url);
