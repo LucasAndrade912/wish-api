@@ -24,6 +24,7 @@ export async function getAllProductsService({ limit, page }: Params) {
                 currency: 'BRL',
             }).format(product.price / 100),
             photoUrl: product.photoUrl,
+            link: product.link,
             createdAt: product.createdAt,
             updatedAt: product.updatedAt,
         };
