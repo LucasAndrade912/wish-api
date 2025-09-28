@@ -24,12 +24,16 @@ export async function webScrappingService(url: string) {
     const title = $('.pdp-info-right h1').text();
 
     let price: string | number = '';
-    const priceStr = $('.pdp-info-right [class^="price-default--current"]')
+    let priceStr = $('.pdp-info-right [class^="price-default--current"]')
         .text()
         .trim()
-        .toUpperCase()
-        .split('R$')[1]
-        .replace(',', '.');
+        .toUpperCase();
+
+    const priceMatch = priceStr.match(/R\$[\d.,]+/);
+
+    if (priceMatch) {
+        priceStr = priceMatch[0].replace('R$', '').replace(/\./g, '').replace(',', '.');
+    }
 
     price = Math.round(Number(priceStr) * 100);
 
