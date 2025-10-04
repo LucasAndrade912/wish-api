@@ -7,6 +7,20 @@ datasource db {
     url      = env("DATABASE_URL")
 }
 
+model User {
+    id        Int      @id @default(autoincrement())
+    uuid      String   @unique @default(uuid())
+    email     String   @unique
+    password  String
+    name      String
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+
+    products Product[]
+
+    @@map("users")
+}
+
 model Product {
     id        Int      @id @default(autoincrement())
     uuid      String   @unique @default(uuid())
@@ -16,6 +30,9 @@ model Product {
     link      String
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt
+
+    userId Int?
+    user   User? @relation(fields: [userId], references: [id])
 
     @@map("products")
 }
