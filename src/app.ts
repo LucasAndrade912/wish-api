@@ -14,4 +14,5 @@ app.register(autoLoad, {
 
 app.register(cors, {
     origin: '*',
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
 });
