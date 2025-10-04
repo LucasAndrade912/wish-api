@@ -1,5 +1,9 @@
 import { app } from './app';
 
+if (!process.env.PORT) {
+    throw new Error('PORT is not defined in environment variables');
+}
+
 const port = Number(process.env.PORT);
 
 async function start() {
