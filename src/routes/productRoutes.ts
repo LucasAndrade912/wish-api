@@ -30,10 +30,12 @@ export default async function (app: FastifyInstance) {
         async (request, reply) => {
             const limit = Number(request.query.limit) || 10;
             const page = Number(request.query.page) || 1;
+            const userId = request.user.sub;
 
             const { products, count, pages } = await getAllProductsService({
                 limit,
                 page,
+                userId,
             });
 
             app.log.info(`GET /products | Retrieved ${products.length} products`);
@@ -57,7 +59,8 @@ export default async function (app: FastifyInstance) {
             });
         }
 
-        const createdProduct = await createProductService(result.data);
+        const userId = request.user.sub;
+        const createdProduct = await createProductService(result.data, userId);
 
         app.log.info(`POST /products | Created product: ${result.data.title}`);
 
@@ -79,10 +82,14 @@ export default async function (app: FastifyInstance) {
         }
 
         try {
-            const updatedData = await updateProductService({
-                id,
-                ...result.data,
-            });
+            const userId = request.user.sub;
+            const updatedData = await updateProductService(
+                {
+                    id,
+                    ...result.data,
+                },
+                userId
+            );
 
             app.log.info(`PUT /products/${id} | Updated product`);
 
@@ -107,7 +114,8 @@ export default async function (app: FastifyInstance) {
         app.log.info(`DELETE /products/${id} | Delete functionality not implemented`);
 
         try {
-            await deleteProductService(id);
+            const userId = request.user.sub;
+            await deleteProductService(id, userId);
 
             return reply.send({ message: 'Product deleted successfully', data: null });
         } catch (error) {

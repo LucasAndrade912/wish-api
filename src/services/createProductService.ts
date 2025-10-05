@@ -7,9 +7,14 @@ interface Product {
     link: string;
 }
 
-export async function createProductService(product: Product) {
+export async function createProductService(product: Product, userId: string) {
     const createdProduct = await prismaClient.product.create({
-        data: { ...product },
+        data: {
+            ...product,
+            user: {
+                connect: { uuid: userId },
+            },
+        },
     });
 
     return {

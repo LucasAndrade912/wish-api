@@ -3,15 +3,17 @@ import { prismaClient } from '../lib/prismaClient';
 interface Params {
     limit: number;
     page: number;
+    userId: string;
 }
 
-export async function getAllProductsService({ limit, page }: Params) {
+export async function getAllProductsService({ limit, page, userId }: Params) {
     const countProducts = await prismaClient.product.count();
     const countPages = Math.ceil(countProducts / limit);
 
     const products = await prismaClient.product.findMany({
         take: limit,
         skip: (page - 1) * limit,
+        where: { user: { uuid: userId } },
     });
 
     const mappedProducts = products.map((product) => {
