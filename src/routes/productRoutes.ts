@@ -6,6 +6,7 @@ import { getAllProductsService } from '../services/getAllProductsService';
 import { createProductService } from '../services/createProductService';
 import { updateProductService } from '../services/updateProductService';
 import { deleteProductService } from '../services/deleteProductService';
+import { authenticate } from '../hook/authenticate';
 
 export default async function (app: FastifyInstance) {
     const createProductSchema = z.object({
@@ -21,6 +22,8 @@ export default async function (app: FastifyInstance) {
         photoUrl: z.url().optional(),
         link: z.url().optional(),
     });
+
+    app.addHook('onRequest', authenticate);
 
     app.get<{ Querystring: IQuerystringPagination }>(
         '/products',
