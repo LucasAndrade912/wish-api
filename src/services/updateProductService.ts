@@ -8,9 +8,9 @@ interface Product {
     link?: string;
 }
 
-export async function updateProductService(product: Product) {
+export async function updateProductService(product: Product, userId: string) {
     const existingProduct = await prismaClient.product.findUnique({
-        where: { uuid: product.id },
+        where: { uuid: product.id, user: { uuid: userId } },
     });
 
     if (!existingProduct) {

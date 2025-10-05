@@ -1,8 +1,8 @@
 import { prismaClient } from '../lib/prismaClient';
 
-export async function deleteProductService(id: string) {
+export async function deleteProductService(productId: string, userId: string) {
     const productExists = await prismaClient.product.findUnique({
-        where: { uuid: id },
+        where: { uuid: productId, user: { uuid: userId } },
     });
 
     if (!productExists) {
@@ -10,6 +10,6 @@ export async function deleteProductService(id: string) {
     }
 
     await prismaClient.product.delete({
-        where: { uuid: id },
+        where: { uuid: productId },
     });
 }
