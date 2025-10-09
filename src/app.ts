@@ -17,7 +17,7 @@ if (!process.env.COOKIE_SECRET) {
 }
 
 app.register(cors, {
-    origin: '*',
+    origin: 'http://localhost:5173',
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
     credentials: true,
 });

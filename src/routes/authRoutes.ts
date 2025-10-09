@@ -1,5 +1,6 @@
 import { z } from 'zod';
 import { FastifyInstance } from 'fastify';
+import { CookieSerializeOptions } from '@fastify/cookie';
 
 import { signUpService } from '../services/signUpService';
 import { EmailAlreadyUsedException } from '../exceptions/emailAlreadyUsedException';
@@ -7,6 +8,13 @@ import { loginService } from '../services/loginService';
 import { InvalidEmailOrPasswordException } from '../exceptions/invalidEmailOrPasswordException';
 
 const MAX_AGE_COOKIE_12_HOURS = 12 * 60 * 60; // 12 hours in seconds
+const COOKIE_ACCESS_TOKEN_CONFIG = {
+    path: '/',
+    httpOnly: true,
+    secure: process.env.NODE_ENV === 'production',
+    sameSite: 'lax',
+    maxAge: MAX_AGE_COOKIE_12_HOURS,
+} satisfies CookieSerializeOptions;
 
 export default async function (app: FastifyInstance) {
     const loginSchema = z.object({
@@ -39,13 +47,7 @@ export default async function (app: FastifyInstance) {
                 signTokenFn: app.jwt.sign,
             });
 
-            reply.setCookie('access_token', user.accessToken, {
-                path: '/',
-                httpOnly: true,
-                secure: process.env.NODE_ENV === 'production',
-                sameSite: 'lax',
-                maxAge: MAX_AGE_COOKIE_12_HOURS,
-            });
+            reply.setCookie('access_token', user.accessToken, COOKIE_ACCESS_TOKEN_CONFIG);
 
             app.log.info(`POST /auth/login | User logged in: ${user.email}`);
 
@@ -86,13 +88,11 @@ export default async function (app: FastifyInstance) {
                 signTokenFn: app.jwt.sign,
             });
 
-            reply.setCookie('access_token', newUser.accessToken, {
-                path: '/',
-                httpOnly: true,
-                secure: process.env.NODE_ENV === 'production',
-                sameSite: 'lax',
-                maxAge: MAX_AGE_COOKIE_12_HOURS,
-            });
+            reply.setCookie(
+                'access_token',
+                newUser.accessToken,
+                COOKIE_ACCESS_TOKEN_CONFIG
+            );
 
             app.log.info(`POST /auth/sign-up | New user created: ${newUser.email}`);
 
@@ -111,5 +111,13 @@ export default async function (app: FastifyInstance) {
             app.log.error(`POST /auth/sign-up | Unexpected error`);
             return reply.status(500).send({ error: 'Unexpected error' });
         }
+    });
+
+    app.post('/auth/logout', async (request, reply) => {
+        reply.clearCookie('access_token', COOKIE_ACCESS_TOKEN_CONFIG);
+
+        return reply.send({
+            message: 'Logout successful',
+        });
     });
 }
