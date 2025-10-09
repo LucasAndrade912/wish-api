@@ -7,7 +7,9 @@ interface Params {
 }
 
 export async function getAllProductsService({ limit, page, userId }: Params) {
-    const countProducts = await prismaClient.product.count();
+    const countProducts = await prismaClient.product.count({
+        where: { user: { uuid: userId } },
+    });
     const countPages = Math.ceil(countProducts / limit);
 
     const products = await prismaClient.product.findMany({
