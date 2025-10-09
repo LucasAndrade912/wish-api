@@ -11,5 +11,16 @@ services:
         volumes:
             - db_data:/var/lib/postgresql/data
 
+    smtp:
+        container_name: wish-smtp
+        image: rnwood/smtp4dev:v3
+        restart: always
+        ports:
+            - "5000:80"
+            - "2525:25"
+        volumes:
+            - smtp_data:/smtp4dev
+
 volumes:
     db_data:
+    smtp_data:
